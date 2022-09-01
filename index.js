@@ -1,16 +1,22 @@
 require('dotenv').config();
 
-if(process.env.BOTTOKEN == "" || process.env.BOTTOKEN == undefined) {
+if (process.env.BOTTOKEN == "" || process.env.BOTTOKEN == undefined) {
     console.log("Please set BOTTOKEN as environment variable");
     process.exit(1);
+} else {
+    console.log("Bot token: " + process.env.BOTTOKEN);
 }
-if(process.env.SERVER_ID == "" || process.env.SERVER_ID == undefined) {
+if (process.env.SERVER_ID == "" || process.env.SERVER_ID == undefined) {
     console.log("Please set SERVER_ID as environment variable");
     process.exit(1);
+} else {
+    console.log("Server ID: " + process.env.SERVER_ID);
 }
-if(process.env.CHANNEL_ID == "" || process.env.CHANNEL_ID == undefined) {
+if (process.env.CHANNEL_ID == "" || process.env.CHANNEL_ID == undefined) {
     console.log("Please set CHANNEL_ID as environment variable");
     process.exit(1);
+} else {
+    console.log("CHANNEL_ID: " + process.env.CHANNEL_ID);
 }
 
 
