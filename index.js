@@ -6,28 +6,41 @@ if (process.env.BOTTOKEN == "" || process.env.BOTTOKEN == undefined) {
 } else {
     console.log("Bot token: " + process.env.BOTTOKEN);
 }
-if (process.env.SERVER_ID == "" || process.env.SERVER_ID == undefined) {
-    console.log("Please set SERVER_ID as environment variable");
-    process.exit(1);
-} else {
-    console.log("Server ID: " + process.env.SERVER_ID);
-}
-if (process.env.CHANNEL_ID == "" || process.env.CHANNEL_ID == undefined) {
-    console.log("Please set CHANNEL_ID as environment variable");
-    process.exit(1);
-} else {
-    console.log("CHANNEL_ID: " + process.env.CHANNEL_ID);
-}
 
+const fs = require('node:fs');
+const path = require('node:path');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
-const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-client.login(process.env.BOTTOKEN);
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('js'));
+
+for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    client.commands.set(command.data.name, command);
+}
 
 client.once('ready', () => {
     console.log('Ready!');
 });
 
-const commandHandler = require('./commands.js');
 
-client.on('messageCreate', commandHandler);
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isChatInputCommand()) return;
+
+    const command = interaction.client.commands.get(interaction.commandName);
+
+    if (!command) return;
+
+    try {
+        await command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
+});
+
+client.login(process.env.BOTTOKEN);
