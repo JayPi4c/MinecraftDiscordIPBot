@@ -53,7 +53,7 @@ services:
     image: itzg/minecraft-server:java17-alpine
     container_name: minecraft
     ports:
-      - "25565:25565"
+      - "12345:25565"
     environment:
       EULA: "FALSE"
       VERSION: "1.7.10"
@@ -69,6 +69,9 @@ services:
       CLIENT_ID: <client-id>
       GUILD_ID: <guild-id>
       CLEAR_COMMANDS: "false"
+      SERVER_PORT: 12345
+      MAP_PORT: 12345
+      MAP_HTTPS: false
 ```
 The tokens and IDs must be changed respectivly. The `minecraft-data` folder is used to store the world data of the Minecraft server. Also it is necessary to accept the EULA of the Minecraft server. This can be done by setting the `EULA` variable to `TRUE`. For more information about the minecraft server image, visit the [GitHub repository](https://github.com/itzg/docker-minecraft-server) of the image.
 

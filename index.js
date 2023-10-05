@@ -4,7 +4,7 @@ if (process.env.BOTTOKEN == "" || process.env.BOTTOKEN == undefined) {
     console.log("Please set BOTTOKEN as environment variable");
     process.exit(1);
 } else {
-    console.log("Bot token: " + process.env.BOTTOKEN);
+    console.log("Bot token is set");
 }
 
 const fs = require('node:fs');
