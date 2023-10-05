@@ -72,6 +72,8 @@ services:
       SERVER_PORT: 12345
       MAP_PORT: 12345
       MAP_HTTPS: false
+      WAIT_MESSAGES: '["test''s"]'
+      DISPLAY_MESSAGES: '["test"]'
 ```
 The tokens and IDs must be changed respectivly. The `minecraft-data` folder is used to store the world data of the Minecraft server. Also it is necessary to accept the EULA of the Minecraft server. This can be done by setting the `EULA` variable to `TRUE`. For more information about the minecraft server image, visit the [GitHub repository](https://github.com/itzg/docker-minecraft-server) of the image.
 
