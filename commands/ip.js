@@ -1,5 +1,9 @@
 const { SlashCommandBuilder } = require('discord.js');
 const http = require('http');
+const MessageGenerator = require('../MessageGenerator.js');
+
+const fetching_mg = new MessageGenerator(process.env.WAIT_MESSAGES, ['Getting IP...']);
+const display_mg = new MessageGenerator(process.env.DISPLAY_MESSAGES, ['Good day to you Sir!']);
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,7 +12,7 @@ module.exports = {
     async execute(interaction) {
         console.log('ip command executed');
         // https://stackoverflow.com/a/68774492
-        await interaction.reply('Getting ip...');
+        await interaction.reply(fetching_mg.get());
         await getIP(interaction);
     },
 };
@@ -17,7 +21,7 @@ async function getIP(interaction) {
     console.log('getting ip');
     http.get({ 'host': 'api.ipify.org', 'port': 80, 'path': '/' }, function (resp) {
         resp.on('data', async ip => {
-            let output = `The current ip is: ${ip}`;
+            let output = display_mg.get() +`\nThe current ip is: ${ip}`;
 
             if (!(process.env.SERVER_PORT == undefined || process.env.SERVER_PORT == "")) {
                 output += `\nServer: ${ip}:${process.env.SERVER_PORT}`
