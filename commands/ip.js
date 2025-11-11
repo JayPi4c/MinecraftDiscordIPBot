@@ -1,9 +1,10 @@
-const { SlashCommandBuilder } = require('discord.js');
-const http = require('http');
+const {SlashCommandBuilder} = require('discord.js');
 const MessageGenerator = require('../MessageGenerator.js');
 
 const fetching_mg = new MessageGenerator(process.env.WAIT_MESSAGES, ['Getting IP...']);
 const display_mg = new MessageGenerator(process.env.DISPLAY_MESSAGES, ['Good day to you Sir!']);
+const enable_ipv4 = process.env.ENABLE_IPV4 || "true";
+const enable_ipv6 = process.env.ENABLE_IPV6 || "false";
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,24 +20,44 @@ module.exports = {
 
 async function getIP(interaction) {
     console.log('getting ip');
-    http.get({ 'host': 'api.ipify.org', 'port': 80, 'path': '/' }, function (resp) {
-        resp.on('data', async ip => {
-            let output = display_mg.get() +`\nThe current ip is: ${ip}`;
 
-            if (!(process.env.SERVER_PORT == undefined || process.env.SERVER_PORT == "")) {
-                output += `\nServer: ${ip}:${process.env.SERVER_PORT}`
-            }
-            if (!(process.env.MAP_PORT == undefined || process.env.MAP_PORT == "")) {
-                let s = "";
-                if (!(process.env.MAP_HTTPS == undefined || process.env.MAPMAP_HTTPS_PORT == "") && process.env.MAP_HTTPS == "true") {
-                    s = "s";
-                }
-                output += `\nMap: http${s}://${ip}:${process.env.MAP_PORT}`
-            }
+    let output = display_mg.get() + `\n`;
 
-            console.log(`ip: ${ip}`);
-            await interaction.editReply(output);
-        });
-    });
+    if (enable_ipv4 === "true") {
+        let v4 = await getIPv4();
+        console.log(`ipv4: ${v4}`);
+        output = addVersion(output, v4);
+    }
+    if (enable_ipv6 === "true") {
+        let v6 = await getIPv6();
+        console.log(`ipv6: ${v6}`);
+        output = addVersion(output, "[" + v6 + "]");
+    }
+
+    await interaction.editReply(output);
 }
 
+function addVersion(output, ip) {
+    if (!(process.env.SERVER_PORT == undefined || process.env.SERVER_PORT == "")) {
+        output += `\nServer: ${ip}:${process.env.SERVER_PORT}`
+    }
+    if (!(process.env.MAP_PORT == undefined || process.env.MAP_PORT == "")) {
+        let s = "";
+        if (!(process.env.MAP_HTTPS == undefined || process.env.MAP_HTTPS == "") && process.env.MAP_HTTPS == "true") {
+            s = "s";
+        }
+        output += `\nMap: http${s}://${ip}:${process.env.MAP_PORT}`
+    }
+
+    return output;
+}
+
+async function getIPv4() {
+    return fetch("https://api.ipify.org")
+        .then(response => response.text())
+}
+
+async function getIPv6() {
+    return fetch("https://api6.ipify.org")
+        .then(response => response.text())
+}
