@@ -32,7 +32,7 @@ It es recommended to use a process manager like [pm2](https://pm2.keymetrics.io/
 The bot can easily be started in a docker container. The docker image is available on [Docker Hub](https://hub.docker.com/r/jaypi4c/discord-ip-bot).
 
 ```bash
-$ docker run -d --name discord-ip-bot -e BOTTOKEN=<your-token> -e GUILD_ID=<guild-id> -e CLIENT-ID=<client-id>  jaypi4c/discord-ip-bot
+$ docker run -d --name discord-ip-bot -e BOTTOKEN=<your-token> -e GUILD_ID=<guild-id> -e CLIENT_ID=<client-id>  jaypi4c/discord-ip-bot
 ```
 (The container does not run the `deploy-commands.js` script. Therefore, the commands have to be registered manually. Maybe in the future I will add a script that registers the commands automatically.)
 
@@ -47,7 +47,6 @@ Furthermort, it is possible to clear all registered commands with the `CLEAR_COM
 It is requiered to have docker and docker-compose installed on the Raspberry Pi.
 To run the bot and the Minecraft server on the same Raspberry Pi, you can create a `docker-compose.yml` file with the following content: 
 ```yaml
-version: "3.9"
 services:
   minecraft:
     image: itzg/minecraft-server:java17-alpine
@@ -61,7 +60,7 @@ services:
     volumes:
       - ./minecraft-data:/data
   ip-bot:
-    image: jaypi4c/discord-ip-bot:1.2.0
+    image: jaypi4c/discord-ip-bot:1.4.1
     container_name: discord-ip-bot
     restart: unless-stopped
     environment:
