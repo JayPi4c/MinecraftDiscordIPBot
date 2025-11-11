@@ -81,6 +81,21 @@ You can run the bot and the Minecraft server with the following command in the s
 $ docker-compose up -d
 ```
 
+### IPv6 Support
+
+To enable IPv6 support for the Discord IP Bot when using Docker Compose, you need to ensure that your Docker daemon (`/etc/docker/daemon.json` needs to have `{"ipv6": true}` inside) is configured to support IPv6 and that you have an external IPv6-enabled network created (`docker network create --ipv6 ipv6net`). With this done, you can add the following lines to the `ip-bot` service in your `docker-compose.yml` file:
+
+```yaml
+    environment:
+      ENABLE_IPV6: "true"
+    networks:
+      - ipv6net
+networks:
+  ipv6net:
+    external: true
+``` 
+
+
 ## Further information
 
 This bot is based on the [Guide](https://discordjs.guide/) of the [Discord.js](https://discord.js.org/#/) library.
